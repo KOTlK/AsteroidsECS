@@ -1,4 +1,5 @@
 ﻿using Asteroids.Runtime.Application;
+using Asteroids.Runtime.Collisions.Components;
 using Asteroids.Runtime.Input.Components;
 using Asteroids.Runtime.Ships.Components;
 using Asteroids.Runtime.Transforms.Components;
@@ -19,6 +20,7 @@ namespace Asteroids.Runtime.Initialization.Systems
         private readonly EcsPoolInject<TransformReference> _transformReferences = default;
         private readonly EcsPoolInject<ShipView> _views = default;
         private readonly EcsCustomInject<Config> _config = default;
+        private readonly EcsPoolInject<AABBCollider> _colliders = default;
         
         public void Init(IEcsSystems systems)
         {
@@ -29,6 +31,7 @@ namespace Asteroids.Runtime.Initialization.Systems
             ref var transform = ref _transforms.Value.Add(entity);
             ref var transformReference = ref _transformReferences.Value.Add(entity);
             ref var view = ref _views.Value.Add(entity);
+            ref var collider = ref _colliders.Value.Add(entity);
             _players.Value.Add(entity);
             _shipInputs.Value.Add(entity);
 
@@ -37,6 +40,9 @@ namespace Asteroids.Runtime.Initialization.Systems
             transform.Rotation = Quaternion.identity;
             transformReference.Transform = instance.transform;
             view.GameObject = instance;
+            collider.Size = new Vector2(1, 1);
+            collider.Layer = PhysicsLayer.Player;
+            collider.TargetLayers = PhysicsLayer.Enemy | PhysicsLayer.Asteroid;
         }
     }
 }
