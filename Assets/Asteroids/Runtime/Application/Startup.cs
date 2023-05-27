@@ -1,12 +1,16 @@
-﻿using Asteroids.Runtime.GameTime.Systems;
+﻿using Asteroids.Runtime.Collisions.Systems;
+using Asteroids.Runtime.GameTime.Systems;
 using Asteroids.Runtime.Initialization.Systems;
 using Asteroids.Runtime.Input.Systems;
 using Asteroids.Runtime.Ships.Systems;
 using Asteroids.Runtime.Transforms.Systems;
 using Leopotam.EcsLite;
 using Leopotam.EcsLite.Di;
-using Mitfart.LeoECSLite.UnityIntegration.Plugins.Mitfart.LeoECSLite.UnityIntegration.Runtime;//wtf
+using Leopotam.EcsLite.ExtendedSystems;
+using Mitfart.LeoECSLite.UnityIntegration.Plugins.Mitfart.LeoECSLite.UnityIntegration.Runtime;
+using Mitfart.LeoECSLite.UnityIntegration.Plugins.Mitfart.LeoECSLite.UnityIntegration.Runtime.Name; //wtf
 using UnityEngine;
+using Collision = Asteroids.Runtime.Collisions.Components.Collision;
 using Time = Asteroids.Runtime.GameTime.Services.Time;
 using Transform = Asteroids.Runtime.Transforms.Components.Transform;
 
@@ -20,8 +24,11 @@ namespace Asteroids.Runtime.Application
 
         private void Start()
         {
+            UnityEngine.Application.targetFrameRate = 0;
             var world = new EcsWorld();
+            var physicsWorld = new EcsWorld();
             _systems = new EcsSystems(world);
+            _systems.AddWorld(physicsWorld, "Physics");
 
 #if UNITY_EDITOR
 
@@ -37,10 +44,13 @@ namespace Asteroids.Runtime.Application
                 .Add(new PlayerShipInputSystem())
                 .Add(new ShipMovementSystem())
                 .Add(new VelocitySystem())
+                .DelHere<Collision>("Physics")
+                .Add(new AABBCollisionDetectionSystem())
                 .Add(new SyncTransformSystem())
 
 #if UNITY_EDITOR
                 .Add(new EcsWorldDebugSystem())
+                .Add(new EcsWorldDebugSystem("Physics", new NameSettings(true)))
 #endif
                 
                 .Inject(new Time(), _config)
