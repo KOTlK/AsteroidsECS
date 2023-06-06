@@ -1,4 +1,5 @@
 ﻿using Asteroids.Runtime.Application;
+using Asteroids.Runtime.CellLists.Components;
 using Asteroids.Runtime.Collisions.Components;
 using Asteroids.Runtime.Input.Components;
 using Asteroids.Runtime.Ships.Components;
@@ -6,7 +7,7 @@ using Asteroids.Runtime.Transforms.Components;
 using Leopotam.EcsLite;
 using Leopotam.EcsLite.Di;
 using UnityEngine;
-using Transform = Asteroids.Runtime.Transforms.Components.Transform;
+using Transform = Asteroids.Runtime.CellLists.Components.Transform;
 
 namespace Asteroids.Runtime.Initialization.Systems
 {
@@ -21,6 +22,7 @@ namespace Asteroids.Runtime.Initialization.Systems
         private readonly EcsPoolInject<ShipView> _views = default;
         private readonly EcsCustomInject<Config> _config = default;
         private readonly EcsPoolInject<AABBCollider> _colliders = default;
+        private readonly EcsPoolInject<InsertInCellLists> _insertInCellLists = default;
         
         public void Init(IEcsSystems systems)
         {
@@ -34,6 +36,7 @@ namespace Asteroids.Runtime.Initialization.Systems
             ref var collider = ref _colliders.Value.Add(entity);
             _players.Value.Add(entity);
             _shipInputs.Value.Add(entity);
+            _insertInCellLists.Value.Add(entity);
 
             ship = config.PlayerShipConfig;
             transform.Position = Vector2.zero;

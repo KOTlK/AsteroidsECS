@@ -3,7 +3,7 @@ using Leopotam.EcsLite;
 using Leopotam.EcsLite.Di;
 using Unity.Collections;
 using UnityEngine.Jobs;
-using Transform = Asteroids.Runtime.Transforms.Components.Transform;
+using Transform = Asteroids.Runtime.CellLists.Components.Transform;
 
 namespace Asteroids.Runtime.Transforms.Systems
 {

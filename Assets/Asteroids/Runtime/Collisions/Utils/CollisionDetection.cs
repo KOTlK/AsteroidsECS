@@ -1,7 +1,7 @@
 ﻿using System;
 using Asteroids.Runtime.Collisions.Components;
 using UnityEngine;
-using Transform = Asteroids.Runtime.Transforms.Components.Transform;
+using Transform = Asteroids.Runtime.CellLists.Components.Transform;
 
 namespace Asteroids.Runtime.Collisions.Utils
 {
@@ -33,6 +33,15 @@ namespace Asteroids.Runtime.Collisions.Utils
             var distance = Math.Sqrt(dx * dx + dy * dy);
 
             return distance <= first.Radius + second.Radius;
+        }
+        
+        public static bool AABBContainsPoint(Vector2 position, AABBCollider aabb, Vector2 point)
+        {
+            var halfExtents = aabb.HalfExtents;
+            return position.x + halfExtents.x >= point.x && 
+                   position.y + halfExtents.y >= point.y &&
+                   position.x - halfExtents.x <= point.x &&
+                   position.y - halfExtents.y <= point.y;
         }
         
         private static Vector2 Clamp(Vector2 vector, Vector2 min, Vector2 max)

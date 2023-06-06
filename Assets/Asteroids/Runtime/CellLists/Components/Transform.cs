@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Asteroids.Runtime.Transforms.Components
+namespace Asteroids.Runtime.CellLists.Components
 {
     [Serializable]
     public struct Transform
