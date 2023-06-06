@@ -388,11 +388,15 @@ MonoBehaviour:
       Acceleration: 15
       Damping: 15
       Velocity: {x: 0, y: 0}
+    PlayerHealth: 100
     CellListsConfig:
       Size: {x: 100, y: 100}
       Center: {x: 0, y: 0}
       Width: 10
       Height: 10
+    AsteroidPrefabs:
+    - {fileID: 2536511333492344619, guid: 70be3145e1bc4da41bcde25081dc2ea0, type: 3}
+  _difficulty: {fileID: 11400000, guid: 794b9156cad50b446bd09858c33837cc, type: 2}
 --- !u!4 &1363459571
 Transform:
   m_ObjectHideFlags: 0
