@@ -388,6 +388,11 @@ MonoBehaviour:
       Acceleration: 15
       Damping: 15
       Velocity: {x: 0, y: 0}
+    CellListsConfig:
+      Size: {x: 100, y: 100}
+      Center: {x: 0, y: 0}
+      Width: 10
+      Height: 10
 --- !u!4 &1363459571
 Transform:
   m_ObjectHideFlags: 0

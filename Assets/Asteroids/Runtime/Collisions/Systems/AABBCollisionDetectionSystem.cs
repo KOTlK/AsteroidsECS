@@ -1,88 +1,154 @@
-﻿using Asteroids.Runtime.Collisions.Components;
+﻿using Asteroids.Runtime.CellLists.Components;
+using Asteroids.Runtime.Collisions.Components;
 using Asteroids.Runtime.Collisions.Utils;
-using Asteroids.Runtime.Transforms.Components;
 using Leopotam.EcsLite;
 using Leopotam.EcsLite.Di;
-using Unity.Burst;
-using Unity.Collections;
-using Unity.Jobs;
-//using Unity.Profiling;
 
 namespace Asteroids.Runtime.Collisions.Systems
 {
-    //Inefficient 3000 colliders - 350+kb allocations ))))00)), 2.5ms per job
-    //With layers job takes 1.5ms, filling array takes 1.1ms
-    //With 3 nativearrays instead 1, filling takes 0.6ms, job takes 5ms
     public class AABBCollisionDetectionSystem : IEcsRunSystem
     {
         private readonly EcsWorldInject _physicsWorld = "Physics";
-        private readonly EcsFilterInject<Inc<AABBCollider, Transform>> _filter = default;
+        private readonly EcsFilterInject<Inc<Cell, CellNeighbours>> _filter = default;
+        private readonly EcsPoolInject<CellNeighbours> _neighbours = default;
         private readonly EcsPoolInject<Transform> _transforms = default;
         private readonly EcsPoolInject<AABBCollider> _aabbColliders = default;
         private readonly EcsPoolInject<Collision> _collisions = "Physics";
 
-        //private static readonly ProfilerMarker Initialization = new (nameof(Initialization));
-        //private static readonly ProfilerMarker Filling = new (nameof(Filling));
-        //private static readonly ProfilerMarker Job = new (nameof(Job));
-
         public void Run(IEcsSystems systems)
         {
-            //Initialization.Begin();
-            var length = _filter.Value.GetEntitiesCount();
-            var array = new NativeArray<(Transform, AABBCollider, int)>(length, Allocator.TempJob);
-            var index = 0;
-            var collisions = new NativeQueue<Collision>(Allocator.TempJob);
-            //Initialization.End();
-
-            //Filling.Begin();
             foreach (var entity in _filter.Value)
             {
-                ref var transform = ref _transforms.Value.Get(entity);
-                ref var collider = ref _aabbColliders.Value.Get(entity);
+                ref var neighbours = ref _neighbours.Value.Get(entity);
 
-                array[index] = (transform, collider, entity);
-                
-                index++;
-            }
-            //Filling.End();
+                foreach (var transformEntity in neighbours.ContainingTransforms)
+                {
+                    ref var transform = ref _transforms.Value.Get(transformEntity);
+                    ref var collider = ref _aabbColliders.Value.Get(transformEntity);
 
-            //Job.Begin();
-            var job = new CollisionsJob()
-            {
-                Targets = array,
-                Collisions = collisions.AsParallelWriter()
-            };
-
-            job.Schedule(length, 32).Complete();
-
-            while (collisions.Count > 0)
-            {
-                var collision = collisions.Dequeue();
-                if(collision is { Sender: 0, Receiver: 0 })
-                    continue;
+                    foreach (var secondTransformEntity in neighbours.ContainingTransforms)
+                    {
+                        if(transformEntity == secondTransformEntity)
+                            continue;
+                        
+                        ref var secondTransform = ref _transforms.Value.Get(secondTransformEntity);
+                        ref var secondCollider = ref _aabbColliders.Value.Get(secondTransformEntity);
+                        
+                        if((collider.TargetLayers & secondCollider.Layer) != secondCollider.Layer)
+                            continue;
                     
-                var collisionEntity = _physicsWorld.Value.NewEntity();
-                ref var collisionEvent = ref _collisions.Value.Add(collisionEntity);
-                collisionEvent = collision;
-            }
-            
-            array.Dispose();
-            collisions.Dispose();
-            //Job.End();
-        }
+                        if (CollisionDetection.AABBPair(collider, transform, secondCollider, secondTransform))
+                        {
+                            var collisionEntity = _physicsWorld.Value.NewEntity();
+                            ref var collision = ref _collisions.Value.Add(collisionEntity);
+                            collision = new Collision
+                            {
+                                Sender = transformEntity,
+                                Receiver = secondTransformEntity,
+                                SenderLayer = collider.Layer,
+                                ReceiverLayer = secondCollider.Layer
+                            };
+                        }
+                    }
 
+                    foreach (var neighbourEntity in neighbours.NeighboursEntities)
+                    {
+                        ref var neighbour = ref _neighbours.Value.Get(neighbourEntity);
+
+                        foreach (var secondTransformEntity in neighbour.ContainingTransforms)
+                        {
+                            if(transformEntity == secondTransformEntity)
+                                continue;
+                        
+                            ref var secondTransform = ref _transforms.Value.Get(secondTransformEntity);
+                            ref var secondCollider = ref _aabbColliders.Value.Get(secondTransformEntity);
+                        
+                            if((collider.TargetLayers & secondCollider.Layer) != secondCollider.Layer)
+                                continue;
+                    
+                            if (CollisionDetection.AABBPair(collider, transform, secondCollider, secondTransform))
+                            {
+                                var collisionEntity = _physicsWorld.Value.NewEntity();
+                                ref var collision = ref _collisions.Value.Add(collisionEntity);
+                                collision = new Collision
+                                {
+                                    Sender = transformEntity,
+                                    Receiver = secondTransformEntity,
+                                    SenderLayer = collider.Layer,
+                                    ReceiverLayer = secondCollider.Layer
+                                };
+                            }
+                        }
+                    }
+                }
+        
+                /*
+                Filling.Begin();
+                ref var neighbours = ref _neighbours.Value.Get(entity);
+                var closest = new NativeList<(Transform, AABBCollider, int)>(Allocator.TempJob);
+                var outputCollisions = new NativeQueue<Collision>(Allocator.TempJob);
+
+                foreach (var transformEntity in neighbours.ContainingTransforms)
+                {
+                    ref var transform = ref _transforms.Value.Get(transformEntity);
+                    ref var aabb = ref _aabbColliders.Value.Get(transformEntity);
+                    closest.Add((transform, aabb, transformEntity));
+                }
+
+                foreach (var neighbourEntity in neighbours.NeighboursEntities)
+                {
+                    ref var neighbour = ref _neighbours.Value.Get(neighbourEntity);
+                    foreach (var transformEntity in neighbour.ContainingTransforms)
+                    {
+                        ref var transform = ref _transforms.Value.Get(transformEntity);
+                        ref var aabb = ref _aabbColliders.Value.Get(transformEntity);
+                        closest.Add((transform, aabb, transformEntity));
+                    }
+                }
+                Filling.End();
+
+                Job.Begin();
+                var job = new CollisionsJob()
+                {
+                    ClosestTransforms = closest,
+                    Output = outputCollisions.AsParallelWriter()
+                };
+                
+                job.Schedule(closest.Length, 1).Complete();
+                
+                Job.End();
+                
+                Finalization.Begin();
+                while (outputCollisions.Count > 0)
+                {
+                    var collision = outputCollisions.Dequeue();
+                    if(collision is { Sender: 0, Receiver: 0 })
+                        continue;
+                    
+                    var collisionEntity = _physicsWorld.Value.NewEntity();
+                    ref var collisionEvent = ref _collisions.Value.Add(collisionEntity);
+                    collisionEvent = collision;
+                }
+
+                closest.Dispose();
+                outputCollisions.Dispose();
+                Finalization.End();
+                */
+            }
+        }
+/*
         [BurstCompile]
         private struct CollisionsJob : IJobParallelFor
         {
-            [ReadOnly] public NativeArray<(Transform, AABBCollider, int)> Targets;
-            public NativeQueue<Collision>.ParallelWriter Collisions;
-            
+            [ReadOnly] public NativeArray<(Transform, AABBCollider, int)> ClosestTransforms;
+            [WriteOnly] public NativeQueue<Collision>.ParallelWriter Output;
+
             [BurstCompile]
             public void Execute(int index)
             {
-                var (transform, collider, entity) = Targets[index];
+                var (transform, collider, entity) = ClosestTransforms[index];
 
-                foreach (var (secondTransform, secondCollider, secondEntity) in Targets)
+                foreach (var (secondTransform, secondCollider, secondEntity) in ClosestTransforms)
                 {
                     if (entity == secondEntity)
                         continue;
@@ -92,14 +158,17 @@ namespace Asteroids.Runtime.Collisions.Systems
                     
                     if (CollisionDetection.AABBPair(collider, transform, secondCollider, secondTransform))
                     {
-                        Collisions.Enqueue(new Collision()
+                        Output.Enqueue(new Collision
                         {
                             Sender = entity,
-                            Receiver = secondEntity
+                            Receiver = secondEntity,
+                            SenderLayer = collider.Layer,
+                            ReceiverLayer = secondCollider.Layer
                         });
                     }
                 }
             }
         }
+        */
     }
 }
