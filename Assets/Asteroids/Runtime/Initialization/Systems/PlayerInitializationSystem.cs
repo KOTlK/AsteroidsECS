@@ -7,6 +7,7 @@ using Asteroids.Runtime.Input.Components;
 using Asteroids.Runtime.Ships.Components;
 using Asteroids.Runtime.Transforms.Components;
 using Asteroids.Runtime.Utils.Components;
+using Asteroids.Runtime.Weapons.Components;
 using Leopotam.EcsLite;
 using Leopotam.EcsLite.Di;
 using UnityEngine;
@@ -28,6 +29,8 @@ namespace Asteroids.Runtime.Initialization.Systems
         private readonly EcsPoolInject<InsertInCellLists> _insertInCellLists = default;
         private readonly EcsPoolInject<Health> _healths = default;
         private readonly EcsPoolInject<Buffer<Damage>> _damageBuffers = default;
+        private readonly EcsPoolInject<Weapon> _weapons = default;
+        private readonly EcsPoolInject<WeaponInput> _weaponInputs = default;
         
         public void Init(IEcsSystems systems)
         {
@@ -41,6 +44,8 @@ namespace Asteroids.Runtime.Initialization.Systems
             ref var collider = ref _colliders.Value.Add(entity);
             ref var health = ref _healths.Value.Add(entity);
             ref var damageBuffer = ref _damageBuffers.Value.Add(entity);
+            ref var weapon = ref _weapons.Value.Add(entity);
+            ref var weaponInput = ref _weaponInputs.Value.Add(entity);
             _players.Value.Add(entity);
             _shipInputs.Value.Add(entity);
             _insertInCellLists.Value.Add(entity);
@@ -57,6 +62,8 @@ namespace Asteroids.Runtime.Initialization.Systems
             health.Current = health.Max;
             health.Min = 0;
             damageBuffer.ExplicitValue = new Queue<Damage>();
+            weapon = config.PlayerWeaponConfig;
+            weaponInput.LookDirection = Vector2.up;
         }
     }
 }

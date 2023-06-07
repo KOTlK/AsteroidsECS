@@ -1,14 +1,15 @@
 ﻿using Asteroids.Runtime.Asteroids.Systems;
-using Asteroids.Runtime.CellLists.Components;
 using Asteroids.Runtime.CellLists.Systems;
-using Asteroids.Runtime.Collisions.Components;
 using Asteroids.Runtime.Collisions.Systems;
 using Asteroids.Runtime.GameTime.Systems;
 using Asteroids.Runtime.HP.Systems;
 using Asteroids.Runtime.Initialization.Systems;
+using Asteroids.Runtime.Input.Components;
 using Asteroids.Runtime.Input.Systems;
 using Asteroids.Runtime.Ships.Systems;
 using Asteroids.Runtime.Transforms.Systems;
+using Asteroids.Runtime.Utils;
+using Asteroids.Runtime.Weapons.Systems;
 using Leopotam.EcsLite;
 using Leopotam.EcsLite.Di;
 using Leopotam.EcsLite.ExtendedSystems;
@@ -25,6 +26,7 @@ namespace Asteroids.Runtime.Application
     {
         [SerializeField] private Config _config;
         [SerializeField] private Difficulty _difficulty;
+        [SerializeField] private InputMap _inputMap;
         
         private EcsSystems _systems;
 
@@ -33,68 +35,53 @@ namespace Asteroids.Runtime.Application
             UnityEngine.Application.targetFrameRate = 0;
             var world = new EcsWorld();
             var physicsWorld = new EcsWorld();
+            var eventsWorld = new EcsWorld();
             _systems = new EcsSystems(world);
-            _systems.AddWorld(physicsWorld, "Physics");
+            _systems.AddWorld(physicsWorld, Constants.PhysicsWorldName);
+            _systems.AddWorld(eventsWorld, Constants.EventsWorldName);
 
 
             var debugEntity = world.NewEntity(); // entity for correct debug visualization
             var transformsPool = world.GetPool<Transform>();
             transformsPool.Add(debugEntity);
-            
-
-            Vector2 Random()
-            {
-                return UnityEngine.Random.insideUnitCircle * 50;
-            }
-            
-            var aabbsPool = world.GetPool<AABBCollider>();
-            var insertPool = world.GetPool<InsertInCellLists>();
-
 
             AddInitSystems();
             _systems
                 .Add(new TimeSystem())
                 .Add(new AsteroidsSpawnSystem())
                 .Add(new PlayerShipInputSystem())
+                .Add(new PlayerWeaponInputSystem())
                 .Add(new ShipMovementSystem())
                 .Add(new VelocitySystem())
+                .Add(new ShootingSystem())
+                .Add(new ShootDelaySystem())
+                .Add(new ReloadingSystem())
+                .Add(new ProjectileSpawnSystem())
+                .Add(new ProjectileMoveSystem())
                 .Add(new AsteroidsMovementSystem())
                 .Add(new AsteroidsLifeSystem())
                 .Add(new CellListsInitSystem())
                 .Add(new InsertTransformSystem())
+                .Add(new RemoveFromCellListsSystem())
                 .Add(new CellListsRebuildSystem())
                 .Add(new CellDrawSystem())
-                .DelHere<Collision>("Physics")
+                .DelHere<Collision>(Constants.PhysicsWorldName)
                 .Add(new AABBCollisionDetectionSystem())
                 //.Add(new CollisionsDebugSystem())
                 .Add(new CollisionsHandleSystem())
-                .Add(new DamageSystem())
+                .Add(new ProjectileDestroySystem())
                 .Add(new AsteroidsDestroySystem())
+                .Add(new DamageSystem())
                 .Add(new SyncTransformSystem())
 
 #if UNITY_EDITOR
                 .Add(new EcsWorldDebugSystem())
-                .Add(new EcsWorldDebugSystem("Physics", new NameSettings(true)))
+                .Add(new EcsWorldDebugSystem(Constants.PhysicsWorldName, new NameSettings(true)))
+                .Add(new EcsWorldDebugSystem(Constants.EventsWorldName, new NameSettings(true)))
 #endif
                 
-                .Inject(new Time(), _config, _difficulty)
+                .Inject(new Time(), _config, _difficulty, _inputMap)
                 .Init();
-
-
-            /*for (var i = 0; i < 1000; i++)
-            {
-                var entity = world.NewEntity();
-                ref var transform1 = ref transformsPool.Add(entity);
-                ref var aabb = ref aabbsPool.Add(entity);
-                var position = Random();
-                insertPool.Add(entity);
-                transform1.Position = position;
-                transform1.Rotation = Quaternion.identity;
-                aabb.Layer = PhysicsLayer.Enemy;
-                aabb.TargetLayers = PhysicsLayer.Player | PhysicsLayer.Asteroid;
-                aabb.Size = new Vector2(1, 1);
-                Debug.DrawRay(transform1.Position, Vector3.up, Color.blue, 200f);
-            }*/
         }
 
         private void AddInitSystems()

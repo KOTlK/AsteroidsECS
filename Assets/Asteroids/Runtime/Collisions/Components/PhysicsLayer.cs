@@ -9,6 +9,7 @@ namespace Asteroids.Runtime.Collisions.Components
         All = 2,
         Player = 4,
         Enemy = 8,
-        Asteroid = 16
+        Asteroid = 16,
+        Projectile = 32
     }
 }

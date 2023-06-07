@@ -1,4 +1,5 @@
-﻿using Leopotam.EcsLite;
+﻿using Asteroids.Runtime.Utils;
+using Leopotam.EcsLite;
 using Leopotam.EcsLite.Di;
 using UnityEngine;
 using Collision = Asteroids.Runtime.Collisions.Components.Collision;
@@ -8,8 +9,8 @@ namespace Asteroids.Runtime.Collisions.Systems
 {
     public class CollisionsDebugSystem : IEcsRunSystem
     {
-        private readonly EcsFilterInject<Inc<Collision>> _filter = "Physics";
-        private readonly EcsPoolInject<Collision> _collisions = "Physics";
+        private readonly EcsFilterInject<Inc<Collision>> _filter = Constants.PhysicsWorldName;
+        private readonly EcsPoolInject<Collision> _collisions = Constants.PhysicsWorldName;
         private readonly EcsPoolInject<Transform> _transforms = default;
         
         public void Run(IEcsSystems systems)
