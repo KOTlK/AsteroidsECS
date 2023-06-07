@@ -5,6 +5,12 @@ namespace Asteroids.Runtime.Utils.Components
     public struct Buffer<T>
     {
         public Queue<T> ExplicitValue;
+
+        public void Initialize()
+        {
+            ExplicitValue = new Queue<T>();
+        }
+        
         public int Count => ExplicitValue.Count;
         public void Add(T element) => ExplicitValue.Enqueue(element);
         public T Remove() => ExplicitValue.Dequeue();

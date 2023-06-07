@@ -1,6 +1,7 @@
 ﻿using Asteroids.Runtime.Asteroids.Systems;
 using Asteroids.Runtime.CellLists.Systems;
 using Asteroids.Runtime.Collisions.Systems;
+using Asteroids.Runtime.Enemies.Systems;
 using Asteroids.Runtime.GameTime.Systems;
 using Asteroids.Runtime.HP.Systems;
 using Asteroids.Runtime.Initialization.Systems;
@@ -53,6 +54,7 @@ namespace Asteroids.Runtime.Application
             _systems
                 .Add(new TimeSystem())
                 .Add(new AsteroidsSpawnSystem())
+                .Add(new EnemiesSpawnSystem())
                 .Add(new PlayerShipInputSystem())
                 .Add(new PlayerWeaponInputSystem())
                 .Add(new ShipMovementSystem())
@@ -73,10 +75,12 @@ namespace Asteroids.Runtime.Application
                 .Add(new AABBCollisionDetectionSystem())
                 //.Add(new CollisionsDebugSystem())
                 .Add(new CollisionsHandleSystem())
+                .Add(new DamageSystem())
                 .Add(new ProjectileDestroySystem())
                 .Add(new AsteroidsDestroySystem())
+                .Add(new EnemyDeathSystem())
+                .Add(new EnemyDestroySystem())
                 .Add(new ScoreSystem())
-                .Add(new DamageSystem())
                 .Add(new SyncTransformSystem())
 
 #if UNITY_EDITOR

@@ -61,7 +61,7 @@ namespace Asteroids.Runtime.Initialization.Systems
             health.Max = config.PlayerHealth;
             health.Current = health.Max;
             health.Min = 0;
-            damageBuffer.ExplicitValue = new Queue<Damage>();
+            damageBuffer.Initialize();
             weapon = config.PlayerWeaponConfig;
             weaponInput.LookDirection = Vector2.up;
         }

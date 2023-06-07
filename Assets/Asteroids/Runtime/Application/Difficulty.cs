@@ -1,5 +1,6 @@
 ﻿using System;
 using Asteroids.Runtime.HP.Components;
+using Asteroids.Runtime.Settings.EnemyConfigs;
 using UnityEngine;
 
 namespace Asteroids.Runtime.Application
@@ -16,5 +17,8 @@ namespace Asteroids.Runtime.Application
         public int AsteroidsAmountPerSpawn;
         public int AsteroidMinReward;
         public int AsteroidMaxReward;
+        public int EnemiesCount;
+        public EnemyConfig[] EnemyConfigs;
+        
     }
 }
