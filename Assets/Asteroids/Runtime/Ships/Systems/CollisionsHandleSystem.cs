@@ -90,8 +90,10 @@ namespace Asteroids.Runtime.Ships.Systems
                         var destroyEventEntity = _eventsWorld.Value.NewEntity();
                         ref var destroyEvent = ref _asteroidDestroyedEvents.Value.Add(destroyEventEntity);
                         ref var projectile = ref _projectiles.Value.Get(collision.Sender);
+                        ref var asteroid = ref _asteroids.Value.Get(collision.Receiver);
 
                         destroyEvent.Destroyer = projectile.Owner;
+                        destroyEvent.Reward = asteroid.Reward;
                         
                         _destroyCommands.Value.Add(collision.Sender);
                         _destroyCommands.Value.Add(collision.Receiver);

@@ -14,5 +14,7 @@ namespace Asteroids.Runtime.Application
         public int AsteroidsSpawnMinDelay;
         public int AsteroidsSpawnMaxDelay;
         public int AsteroidsAmountPerSpawn;
+        public int AsteroidMinReward;
+        public int AsteroidMaxReward;
     }
 }
