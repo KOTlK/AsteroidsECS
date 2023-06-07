@@ -69,8 +69,8 @@ namespace Asteroids.Runtime.Asteroids.Systems
 
         private Vector2 RandomPosition()
         {
-            var max = _config.Value.CellListsConfig.Center + _config.Value.CellListsConfig.Size * 0.5f;
-            var min = _config.Value.CellListsConfig.Center - _config.Value.CellListsConfig.Size * 0.5f;
+            var max = _config.Value.CellListsConfig.Center + _config.Value.CellListsConfig.Size * 0.45f;
+            var min = _config.Value.CellListsConfig.Center - _config.Value.CellListsConfig.Size * 0.45f;
 
             return new Vector2(UnityEngine.Random.Range(min.x, max.x), UnityEngine.Random.Range(min.y, max.y));
         }

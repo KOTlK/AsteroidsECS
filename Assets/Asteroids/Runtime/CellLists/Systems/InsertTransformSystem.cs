@@ -2,6 +2,8 @@
 using Asteroids.Runtime.Collisions.Utils;
 using Leopotam.EcsLite;
 using Leopotam.EcsLite.Di;
+using UnityEngine;
+using Transform = Asteroids.Runtime.CellLists.Components.Transform;
 
 namespace Asteroids.Runtime.CellLists.Systems
 {
@@ -23,10 +25,10 @@ namespace Asteroids.Runtime.CellLists.Systems
                 foreach (var cellEntity in _cellLists.Value)
                 {
                     ref var cell = ref _cells.Value.Get(cellEntity);
-                    ref var neighbour = ref _neighbours.Value.Get(cellEntity);
 
                     if (CollisionDetection.AABBContainsPoint(cell.Position, cell.AABB, transform.Position))
                     {
+                        ref var neighbour = ref _neighbours.Value.Get(cellEntity);
                         neighbour.ContainingTransforms.Add(entity);
                     }
                 }

@@ -1,6 +1,7 @@
 ﻿using Asteroids.Runtime.CellLists.Components;
 using Asteroids.Runtime.Collisions.Components;
 using Asteroids.Runtime.Collisions.Utils;
+using Asteroids.Runtime.Utils;
 using Leopotam.EcsLite;
 using Leopotam.EcsLite.Di;
 
@@ -8,12 +9,12 @@ namespace Asteroids.Runtime.Collisions.Systems
 {
     public class AABBCollisionDetectionSystem : IEcsRunSystem
     {
-        private readonly EcsWorldInject _physicsWorld = "Physics";
+        private readonly EcsWorldInject _physicsWorld = Constants.PhysicsWorldName;
         private readonly EcsFilterInject<Inc<Cell, CellNeighbours>> _filter = default;
         private readonly EcsPoolInject<CellNeighbours> _neighbours = default;
         private readonly EcsPoolInject<Transform> _transforms = default;
         private readonly EcsPoolInject<AABBCollider> _aabbColliders = default;
-        private readonly EcsPoolInject<Collision> _collisions = "Physics";
+        private readonly EcsPoolInject<Collision> _collisions = Constants.PhysicsWorldName;
 
         public void Run(IEcsSystems systems)
         {

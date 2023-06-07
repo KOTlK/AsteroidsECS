@@ -388,6 +388,19 @@ MonoBehaviour:
       Acceleration: 15
       Damping: 15
       Velocity: {x: 0, y: 0}
+    PlayerWeaponConfig:
+      Damage:
+        Amount: 10
+      Targets: 24
+      TransformOffset: 1
+      ShootDelay: 0.5
+      ReloadTime: 3
+      ProjectileSpeed: 7
+      ProjectileDistance: 100
+      ProjectileSize: {x: 0.5, y: 0.5}
+      RoundsLeft: 10
+      RoundsMax: 10
+      ProjectilePrefab: {fileID: 5286059483508811274, guid: a8b12e78c1a9c7f48b362c85ca8563c3, type: 3}
     PlayerHealth: 100
     CellListsConfig:
       Size: {x: 100, y: 100}
@@ -396,7 +409,10 @@ MonoBehaviour:
       Height: 10
     AsteroidPrefabs:
     - {fileID: 2536511333492344619, guid: 70be3145e1bc4da41bcde25081dc2ea0, type: 3}
-  _difficulty: {fileID: 11400000, guid: 794b9156cad50b446bd09858c33837cc, type: 2}
+  _difficulty: {fileID: 11400000, guid: 7ec369b3a7a1cfc468118614501e8d1e, type: 2}
+  _inputMap:
+    Shoot: 32
+    Reload: 114
 --- !u!4 &1363459571
 Transform:
   m_ObjectHideFlags: 0
