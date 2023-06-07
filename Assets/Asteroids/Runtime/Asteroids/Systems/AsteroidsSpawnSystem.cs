@@ -56,6 +56,7 @@ namespace Asteroids.Runtime.Asteroids.Systems
                     asteroid.Speed = difficulty.AsteroidsSpeed;
                     asteroid.LifeTime = difficulty.AsteroidsLifeTime;
                     asteroid.MovementDirection = (config.CellListsConfig.Center - asteroidPosition).normalized;
+                    asteroid.Reward = _random.Next(difficulty.AsteroidMinReward, difficulty.AsteroidMaxReward);
                     transform.Position = asteroidPosition;
                     transform.Rotation = Quaternion.identity;
                     asteroidReference.View = instance;

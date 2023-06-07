@@ -6,6 +6,9 @@ using Asteroids.Runtime.HP.Systems;
 using Asteroids.Runtime.Initialization.Systems;
 using Asteroids.Runtime.Input.Components;
 using Asteroids.Runtime.Input.Systems;
+using Asteroids.Runtime.Score;
+using Asteroids.Runtime.Score.Systems;
+using Asteroids.Runtime.Score.View;
 using Asteroids.Runtime.Ships.Systems;
 using Asteroids.Runtime.Transforms.Systems;
 using Asteroids.Runtime.Utils;
@@ -27,6 +30,7 @@ namespace Asteroids.Runtime.Application
         [SerializeField] private Config _config;
         [SerializeField] private Difficulty _difficulty;
         [SerializeField] private InputMap _inputMap;
+        [SerializeField] private ScoreView _scoreView;
         
         private EcsSystems _systems;
 
@@ -71,6 +75,7 @@ namespace Asteroids.Runtime.Application
                 .Add(new CollisionsHandleSystem())
                 .Add(new ProjectileDestroySystem())
                 .Add(new AsteroidsDestroySystem())
+                .Add(new ScoreSystem())
                 .Add(new DamageSystem())
                 .Add(new SyncTransformSystem())
 
@@ -80,7 +85,7 @@ namespace Asteroids.Runtime.Application
                 .Add(new EcsWorldDebugSystem(Constants.EventsWorldName, new NameSettings(true)))
 #endif
                 
-                .Inject(new Time(), _config, _difficulty, _inputMap)
+                .Inject(new Time(), new GameScore(_scoreView) , _config, _difficulty, _inputMap)
                 .Init();
         }
 

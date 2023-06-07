@@ -19,3 +19,5 @@ MonoBehaviour:
   AsteroidsSpawnMinDelay: 1
   AsteroidsSpawnMaxDelay: 2
   AsteroidsAmountPerSpawn: 5
+  AsteroidMinReward: 1
+  AsteroidMaxReward: 10
