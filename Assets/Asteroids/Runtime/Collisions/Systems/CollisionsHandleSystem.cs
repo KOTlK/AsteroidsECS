@@ -1,14 +1,14 @@
 ﻿using Asteroids.Runtime.Asteroids.Components;
 using Asteroids.Runtime.Collisions.Components;
+using Asteroids.Runtime.Enemies.Components;
 using Asteroids.Runtime.HP.Components;
-using Asteroids.Runtime.Ships.Components;
 using Asteroids.Runtime.Utils;
 using Asteroids.Runtime.Utils.Components;
 using Asteroids.Runtime.Weapons.Components;
 using Leopotam.EcsLite;
 using Leopotam.EcsLite.Di;
 
-namespace Asteroids.Runtime.Ships.Systems
+namespace Asteroids.Runtime.Collisions.Systems
 {
     public class CollisionsHandleSystem : IEcsRunSystem
     {
@@ -74,11 +74,14 @@ namespace Asteroids.Runtime.Ships.Systems
                     case { SenderLayer: PhysicsLayer.Projectile, ReceiverLayer: PhysicsLayer.Enemy }:
                     {
                         ref var projectile = ref _projectiles.Value.Get(collision.Sender);
-                        
+
                         if (projectile.Owner != collision.Receiver)
                         {
                             ref var enemyDamageBuffer = ref _damageBuffers.Value.Get(collision.Receiver);
+                            ref var enemy = ref _enemies.Value.Get(collision.Receiver);
 
+                            enemy.LastTakenDamageFrom = projectile.Owner;
+                            
                             enemyDamageBuffer.Add(projectile.Damage);
                             _destroyCommands.Value.Add(collision.Sender);
                         }
