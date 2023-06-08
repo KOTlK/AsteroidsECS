@@ -530,12 +530,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e6acbef08884afc8201f18d6fe4ae00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _camera: {fileID: 519420031}
   _config:
     PlayerShipPrefab: {fileID: 8367067657811329913, guid: 11ed522c3c0ca6948a6f3dc5954fdada, type: 3}
     PlayerShipConfig:
       MaxSpeed: 10
       Acceleration: 15
       Damping: 15
+      RotationSpeed: 2
       Velocity: {x: 0, y: 0}
     PlayerWeaponConfig:
       Damage:

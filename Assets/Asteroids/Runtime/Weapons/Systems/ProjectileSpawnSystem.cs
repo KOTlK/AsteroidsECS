@@ -35,6 +35,8 @@ namespace Asteroids.Runtime.Weapons.Systems
                 ref var reference = ref _references.Value.Add(projectileEntity);
                 ref var transformReference = ref _transformReferences.Value.Add(projectileEntity);
                 var instance = Object.Instantiate(command.Prefab, command.Position, Quaternion.identity);
+                var direction = command.Direction;
+                var angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90;
                 _cellLists.Value.Add(projectileEntity);
 
                 projectile.Direction = command.Direction;
@@ -47,7 +49,7 @@ namespace Asteroids.Runtime.Weapons.Systems
                 collider.TargetLayers = command.Targets;
                 collider.Size = command.Size;
                 transform.Position = command.Position;
-                transform.Rotation = Quaternion.identity;
+                transform.Rotation = Quaternion.AngleAxis(angle, Vector3.forward);
                 reference.View = instance;
                 transformReference.Transform = instance.transform;
 

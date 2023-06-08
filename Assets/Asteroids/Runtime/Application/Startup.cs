@@ -28,6 +28,7 @@ namespace Asteroids.Runtime.Application
 {
     public class Startup : MonoBehaviour
     {
+        [SerializeField] private Camera _camera;
         [SerializeField] private Config _config;
         [SerializeField] private Difficulty _difficulty;
         [SerializeField] private InputMap _inputMap;
@@ -58,6 +59,8 @@ namespace Asteroids.Runtime.Application
                 .Add(new PlayerShipInputSystem())
                 .Add(new PlayerWeaponInputSystem())
                 .Add(new ShipMovementSystem())
+                .Add(new ShipRotationSystem())
+                .Add(new WeaponRotationSystem())
                 .Add(new VelocitySystem())
                 .Add(new ShootingSystem())
                 .Add(new ShootDelaySystem())
@@ -89,7 +92,7 @@ namespace Asteroids.Runtime.Application
                 .Add(new EcsWorldDebugSystem(Constants.EventsWorldName, new NameSettings(true)))
 #endif
                 
-                .Inject(new Time(), new GameScore(_scoreView) , _config, _difficulty, _inputMap)
+                .Inject(new Time(), new GameScore(_scoreView) , _config, _difficulty, _inputMap, _camera)
                 .Init();
         }
 
