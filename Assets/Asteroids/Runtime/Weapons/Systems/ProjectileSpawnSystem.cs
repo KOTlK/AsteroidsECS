@@ -50,6 +50,7 @@ namespace Asteroids.Runtime.Weapons.Systems
                 collider.Size = command.Size;
                 transform.Position = command.Position;
                 transform.Rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+                transform.Cell = int.MinValue;
                 reference.View = instance;
                 transformReference.Transform = instance.transform;
 

@@ -36,6 +36,10 @@ namespace Asteroids.Runtime.Collisions.Systems
                         ref var enemy = ref _enemies.Value.Get(collision.Receiver);
 
                         playerDamageBuffer.Add(enemy.DamageOnPlayerCollision);
+                        
+                        if (_destroyCommands.Value.Has(collision.Receiver))
+                            break;
+                        
                         _destroyCommands.Value.Add(collision.Receiver);
                         break;
                     }
@@ -45,6 +49,10 @@ namespace Asteroids.Runtime.Collisions.Systems
                         ref var asteroid = ref _asteroids.Value.Get(collision.Sender);
 
                         playerDamageBuffer.Add(asteroid.Damage);
+                        
+                        if (_destroyCommands.Value.Has(collision.Sender))
+                            break;
+                        
                         _destroyCommands.Value.Add(collision.Sender);
                         break;
                     }
@@ -54,6 +62,10 @@ namespace Asteroids.Runtime.Collisions.Systems
                         ref var asteroid = ref _asteroids.Value.Get(collision.Sender);
 
                         enemyDamageBuffer.Add(asteroid.Damage);
+                        
+                        if (_destroyCommands.Value.Has(collision.Sender))
+                            break;
+                        
                         _destroyCommands.Value.Add(collision.Sender);
                         break;
                     }
@@ -66,6 +78,10 @@ namespace Asteroids.Runtime.Collisions.Systems
                             ref var playerDamageBuffer = ref _damageBuffers.Value.Get(collision.Receiver);
 
                             playerDamageBuffer.Add(projectile.Damage);
+                            
+                            if (_destroyCommands.Value.Has(collision.Sender))
+                                break;
+                            
                             _destroyCommands.Value.Add(collision.Sender);
                         }
 
@@ -83,6 +99,10 @@ namespace Asteroids.Runtime.Collisions.Systems
                             enemy.LastTakenDamageFrom = projectile.Owner;
                             
                             enemyDamageBuffer.Add(projectile.Damage);
+                            
+                            if (_destroyCommands.Value.Has(collision.Sender))
+                                break;
+                            
                             _destroyCommands.Value.Add(collision.Sender);
                         }
 
@@ -98,7 +118,13 @@ namespace Asteroids.Runtime.Collisions.Systems
                         destroyEvent.Destroyer = projectile.Owner;
                         destroyEvent.Reward = asteroid.Reward;
                         
+                        if (_destroyCommands.Value.Has(collision.Sender))
+                            break;
                         _destroyCommands.Value.Add(collision.Sender);
+                        
+                        if (_destroyCommands.Value.Has(collision.Receiver))
+                            break;
+                        
                         _destroyCommands.Value.Add(collision.Receiver);
 
                         break;

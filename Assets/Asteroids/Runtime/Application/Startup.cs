@@ -1,7 +1,9 @@
-﻿using Asteroids.Runtime.Asteroids.Systems;
+﻿using Asteroids.Runtime.AI.Systems;
+using Asteroids.Runtime.Asteroids.Systems;
 using Asteroids.Runtime.CellLists.Systems;
 using Asteroids.Runtime.Collisions.Systems;
 using Asteroids.Runtime.Enemies.Systems;
+using Asteroids.Runtime.GameCamera.Systems;
 using Asteroids.Runtime.GameTime.Systems;
 using Asteroids.Runtime.HP.Systems;
 using Asteroids.Runtime.Initialization.Systems;
@@ -46,7 +48,6 @@ namespace Asteroids.Runtime.Application
             _systems.AddWorld(physicsWorld, Constants.PhysicsWorldName);
             _systems.AddWorld(eventsWorld, Constants.EventsWorldName);
 
-
             var debugEntity = world.NewEntity(); // entity for correct debug visualization
             var transformsPool = world.GetPool<Transform>();
             transformsPool.Add(debugEntity);
@@ -58,6 +59,10 @@ namespace Asteroids.Runtime.Application
                 .Add(new EnemiesSpawnSystem())
                 .Add(new PlayerShipInputSystem())
                 .Add(new PlayerWeaponInputSystem())
+                .Add(new PatrolSystem())
+                .Add(new FollowSystem())
+                .Add(new AttackSystem())
+                .Add(new PositionRestrictionSystem())
                 .Add(new ShipMovementSystem())
                 .Add(new ShipRotationSystem())
                 .Add(new WeaponRotationSystem())
@@ -69,11 +74,12 @@ namespace Asteroids.Runtime.Application
                 .Add(new ProjectileMoveSystem())
                 .Add(new AsteroidsMovementSystem())
                 .Add(new AsteroidsLifeSystem())
-                .Add(new CellListsInitSystem())
                 .Add(new InsertTransformSystem())
                 .Add(new RemoveFromCellListsSystem())
                 .Add(new CellListsRebuildSystem())
-                .Add(new CellDrawSystem())
+                //.Add(new CellDrawSystem())
+                //.Add(new CellNeighboursDrawSystem())
+                //.Add(new DisplayNeighboursSystem())
                 .DelHere<Collision>(Constants.PhysicsWorldName)
                 .Add(new AABBCollisionDetectionSystem())
                 //.Add(new CollisionsDebugSystem())
@@ -84,12 +90,13 @@ namespace Asteroids.Runtime.Application
                 .Add(new EnemyDeathSystem())
                 .Add(new EnemyDestroySystem())
                 .Add(new ScoreSystem())
+                .Add(new CameraFollowSystem())
                 .Add(new SyncTransformSystem())
 
 #if UNITY_EDITOR
-                .Add(new EcsWorldDebugSystem())
-                .Add(new EcsWorldDebugSystem(Constants.PhysicsWorldName, new NameSettings(true)))
-                .Add(new EcsWorldDebugSystem(Constants.EventsWorldName, new NameSettings(true)))
+                //.Add(new EcsWorldDebugSystem())
+                //.Add(new EcsWorldDebugSystem(Constants.PhysicsWorldName, new NameSettings(true)))
+                //.Add(new EcsWorldDebugSystem(Constants.EventsWorldName, new NameSettings(true)))
 #endif
                 
                 .Inject(new Time(), new GameScore(_scoreView) , _config, _difficulty, _inputMap, _camera)
@@ -99,7 +106,7 @@ namespace Asteroids.Runtime.Application
         private void AddInitSystems()
         {
             _systems
-                .Add(new WorldCreationSystem())
+                .Add(new CellListsInitSystem())
                 .Add(new PlayerInitializationSystem())
                 ;
         }

@@ -29,6 +29,9 @@ namespace Asteroids.Runtime.Weapons.Systems
 
                 if (projectile.DistancePassed >= projectile.MaxDistance)
                 {
+                    if(_destroy.Value.Has(entity))
+                        continue;
+                    
                     _destroy.Value.Add(entity);
                 }
             }

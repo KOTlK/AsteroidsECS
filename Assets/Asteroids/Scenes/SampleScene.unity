@@ -359,7 +359,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 9
+  orthographic size: 15
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -532,6 +532,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _camera: {fileID: 519420031}
   _config:
+    Camera: {fileID: 519420031}
+    CameraSpeed: 8
     PlayerShipPrefab: {fileID: 8367067657811329913, guid: 11ed522c3c0ca6948a6f3dc5954fdada, type: 3}
     PlayerShipConfig:
       MaxSpeed: 10
@@ -546,8 +548,8 @@ MonoBehaviour:
       TransformOffset: 1
       ShootDelay: 0.5
       ReloadTime: 3
-      ProjectileSpeed: 7
-      ProjectileDistance: 100
+      ProjectileSpeed: 20
+      ShootRange: 50
       ProjectileSize: {x: 0.5, y: 0.5}
       RoundsLeft: 10
       RoundsMax: 10

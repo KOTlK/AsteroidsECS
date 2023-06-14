@@ -10,7 +10,7 @@ namespace Asteroids.Runtime.Collisions.Systems
     public class AABBCollisionDetectionSystem : IEcsRunSystem
     {
         private readonly EcsWorldInject _physicsWorld = Constants.PhysicsWorldName;
-        private readonly EcsFilterInject<Inc<Cell, CellNeighbours>> _filter = default;
+        private readonly EcsFilterInject<Inc<Transform, AABBCollider>> _transformsFilter = default;
         private readonly EcsPoolInject<CellNeighbours> _neighbours = default;
         private readonly EcsPoolInject<Transform> _transforms = default;
         private readonly EcsPoolInject<AABBCollider> _aabbColliders = default;
@@ -18,158 +18,68 @@ namespace Asteroids.Runtime.Collisions.Systems
 
         public void Run(IEcsSystems systems)
         {
-            foreach (var entity in _filter.Value)
+            foreach (var entity in _transformsFilter.Value)
             {
-                ref var neighbours = ref _neighbours.Value.Get(entity);
+                ref var transform = ref _transforms.Value.Get(entity);
+                ref var collider = ref _aabbColliders.Value.Get(entity);
+                
+                if(transform.Cell == int.MinValue)
+                    continue;
+                
+                ref var neighbours = ref _neighbours.Value.Get(transform.Cell);
 
-                foreach (var transformEntity in neighbours.ContainingTransforms)
+                foreach (var neighbourTransformEntity in neighbours.ContainingTransforms)
                 {
-                    ref var transform = ref _transforms.Value.Get(transformEntity);
-                    ref var collider = ref _aabbColliders.Value.Get(transformEntity);
-
-                    foreach (var secondTransformEntity in neighbours.ContainingTransforms)
-                    {
-                        if(transformEntity == secondTransformEntity)
-                            continue;
-                        
-                        ref var secondTransform = ref _transforms.Value.Get(secondTransformEntity);
-                        ref var secondCollider = ref _aabbColliders.Value.Get(secondTransformEntity);
-                        
-                        if((collider.TargetLayers & secondCollider.Layer) != secondCollider.Layer)
-                            continue;
+                    if(entity == neighbourTransformEntity)
+                        continue;
                     
-                        if (CollisionDetection.AABBPair(collider, transform, secondCollider, secondTransform))
-                        {
-                            var collisionEntity = _physicsWorld.Value.NewEntity();
-                            ref var collision = ref _collisions.Value.Add(collisionEntity);
-                            collision = new Collision
-                            {
-                                Sender = transformEntity,
-                                Receiver = secondTransformEntity,
-                                SenderLayer = collider.Layer,
-                                ReceiverLayer = secondCollider.Layer
-                            };
-                        }
-                    }
-
-                    foreach (var neighbourEntity in neighbours.NeighboursEntities)
-                    {
-                        ref var neighbour = ref _neighbours.Value.Get(neighbourEntity);
-
-                        foreach (var secondTransformEntity in neighbour.ContainingTransforms)
-                        {
-                            if(transformEntity == secondTransformEntity)
-                                continue;
-                        
-                            ref var secondTransform = ref _transforms.Value.Get(secondTransformEntity);
-                            ref var secondCollider = ref _aabbColliders.Value.Get(secondTransformEntity);
-                        
-                            if((collider.TargetLayers & secondCollider.Layer) != secondCollider.Layer)
-                                continue;
+                    ref var neighbourTransform = ref _transforms.Value.Get(neighbourTransformEntity);
+                    ref var neighbourCollider = ref _aabbColliders.Value.Get(neighbourTransformEntity);
                     
-                            if (CollisionDetection.AABBPair(collider, transform, secondCollider, secondTransform))
-                            {
-                                var collisionEntity = _physicsWorld.Value.NewEntity();
-                                ref var collision = ref _collisions.Value.Add(collisionEntity);
-                                collision = new Collision
-                                {
-                                    Sender = transformEntity,
-                                    Receiver = secondTransformEntity,
-                                    SenderLayer = collider.Layer,
-                                    ReceiverLayer = secondCollider.Layer
-                                };
-                            }
-                        }
-                    }
-                }
-        
-                /*
-                Filling.Begin();
-                ref var neighbours = ref _neighbours.Value.Get(entity);
-                var closest = new NativeList<(Transform, AABBCollider, int)>(Allocator.TempJob);
-                var outputCollisions = new NativeQueue<Collision>(Allocator.TempJob);
+                    if((collider.TargetLayers & neighbourCollider.Layer) != neighbourCollider.Layer)
+                        continue;
 
-                foreach (var transformEntity in neighbours.ContainingTransforms)
-                {
-                    ref var transform = ref _transforms.Value.Get(transformEntity);
-                    ref var aabb = ref _aabbColliders.Value.Get(transformEntity);
-                    closest.Add((transform, aabb, transformEntity));
+                    if (CollisionDetection.AABBPair(collider, transform, neighbourCollider, neighbourTransform))
+                    {
+                        var collisionEntity = _physicsWorld.Value.NewEntity();
+                        ref var collision = ref _collisions.Value.Add(collisionEntity);
+                        collision = new Collision
+                        {
+                            Sender = entity,
+                            Receiver = neighbourTransformEntity,
+                            SenderLayer = collider.Layer,
+                            ReceiverLayer = neighbourCollider.Layer
+                        };
+                    }
                 }
 
                 foreach (var neighbourEntity in neighbours.NeighboursEntities)
                 {
                     ref var neighbour = ref _neighbours.Value.Get(neighbourEntity);
-                    foreach (var transformEntity in neighbour.ContainingTransforms)
+
+                    foreach (var neighbourTransformEntity in neighbour.ContainingTransforms)
                     {
-                        ref var transform = ref _transforms.Value.Get(transformEntity);
-                        ref var aabb = ref _aabbColliders.Value.Get(transformEntity);
-                        closest.Add((transform, aabb, transformEntity));
-                    }
-                }
-                Filling.End();
-
-                Job.Begin();
-                var job = new CollisionsJob()
-                {
-                    ClosestTransforms = closest,
-                    Output = outputCollisions.AsParallelWriter()
-                };
-                
-                job.Schedule(closest.Length, 1).Complete();
-                
-                Job.End();
-                
-                Finalization.Begin();
-                while (outputCollisions.Count > 0)
-                {
-                    var collision = outputCollisions.Dequeue();
-                    if(collision is { Sender: 0, Receiver: 0 })
-                        continue;
+                        ref var neighbourTransform = ref _transforms.Value.Get(neighbourTransformEntity);
+                        ref var neighbourCollider = ref _aabbColliders.Value.Get(neighbourTransformEntity);
                     
-                    var collisionEntity = _physicsWorld.Value.NewEntity();
-                    ref var collisionEvent = ref _collisions.Value.Add(collisionEntity);
-                    collisionEvent = collision;
-                }
+                        if((collider.TargetLayers & neighbourCollider.Layer) != neighbourCollider.Layer)
+                            continue;
 
-                closest.Dispose();
-                outputCollisions.Dispose();
-                Finalization.End();
-                */
-            }
-        }
-/*
-        [BurstCompile]
-        private struct CollisionsJob : IJobParallelFor
-        {
-            [ReadOnly] public NativeArray<(Transform, AABBCollider, int)> ClosestTransforms;
-            [WriteOnly] public NativeQueue<Collision>.ParallelWriter Output;
-
-            [BurstCompile]
-            public void Execute(int index)
-            {
-                var (transform, collider, entity) = ClosestTransforms[index];
-
-                foreach (var (secondTransform, secondCollider, secondEntity) in ClosestTransforms)
-                {
-                    if (entity == secondEntity)
-                        continue;
-
-                    if((collider.TargetLayers & secondCollider.Layer) != secondCollider.Layer)
-                        continue;
-                    
-                    if (CollisionDetection.AABBPair(collider, transform, secondCollider, secondTransform))
-                    {
-                        Output.Enqueue(new Collision
+                        if (CollisionDetection.AABBPair(collider, transform, neighbourCollider, neighbourTransform))
                         {
-                            Sender = entity,
-                            Receiver = secondEntity,
-                            SenderLayer = collider.Layer,
-                            ReceiverLayer = secondCollider.Layer
-                        });
+                            var collisionEntity = _physicsWorld.Value.NewEntity();
+                            ref var collision = ref _collisions.Value.Add(collisionEntity);
+                            collision = new Collision
+                            {
+                                Sender = entity,
+                                Receiver = neighbourTransformEntity,
+                                SenderLayer = collider.Layer,
+                                ReceiverLayer = neighbourCollider.Layer
+                            };
+                        }
                     }
                 }
             }
         }
-        */
     }
 }

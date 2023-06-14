@@ -16,11 +16,11 @@ MonoBehaviour:
     Amount: 10
   AsteroidsSpeed: 10
   AsteroidsLifeTime: 10
-  AsteroidsSpawnMinDelay: 10
-  AsteroidsSpawnMaxDelay: 30
-  AsteroidsAmountPerSpawn: 1
+  AsteroidsSpawnMinDelay: 1
+  AsteroidsSpawnMaxDelay: 3
+  AsteroidsAmountPerSpawn: 3
   AsteroidMinReward: 1
   AsteroidMaxReward: 10
-  EnemiesCount: 15
+  EnemiesCount: 10
   EnemyConfigs:
   - {fileID: 11400000, guid: 358c3fefa7a16f0459cd55c57da93a4b, type: 2}

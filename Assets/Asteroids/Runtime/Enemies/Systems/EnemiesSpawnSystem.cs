@@ -1,4 +1,5 @@
-﻿using Asteroids.Runtime.Application;
+﻿using Asteroids.Runtime.AI.Components;
+using Asteroids.Runtime.Application;
 using Asteroids.Runtime.CellLists.Components;
 using Asteroids.Runtime.Collisions.Components;
 using Asteroids.Runtime.Enemies.Components;
@@ -34,6 +35,7 @@ namespace Asteroids.Runtime.Enemies.Systems
         private readonly EcsPoolInject<Ship> _ships = default;
         private readonly EcsPoolInject<InsertInCellLists> _cellLists = default;
         private readonly EcsPoolInject<ShipInput> _shipInputs = default;
+        private readonly EcsPoolInject<Patrol> _patrols = default;
 
         private readonly Random _random = new();
         
@@ -42,6 +44,7 @@ namespace Asteroids.Runtime.Enemies.Systems
             var enemiesCount = _shipsFilter.Value.GetEntitiesCount();
             var difficulty = _difficulty.Value;
             var shouldSpawn = difficulty.EnemiesCount - enemiesCount;
+            var cellLists = _config.Value.CellListsConfig;
 
             while (shouldSpawn > 0)
             {
@@ -56,19 +59,20 @@ namespace Asteroids.Runtime.Enemies.Systems
                 ref var weapon = ref _weapons.Value.Add(entity);
                 ref var weaponInput = ref _weaponInputs.Value.Add(entity);
                 ref var ship = ref _ships.Value.Add(entity);
-                var position = RandomPosition();
+                ref var patrol = ref _patrols.Value.Add(entity);
+                var position = cellLists.RandomPointInside();
                 var enemyConfig = difficulty.EnemyConfigs[_random.Next(0, difficulty.EnemyConfigs.Length - 1)];
                 var instance = Object.Instantiate(enemyConfig.Prefab);
                 _shipInputs.Value.Add(entity);
                 _cellLists.Value.Add(entity);
 
-                enemy.DamageOnPlayerCollision = enemyConfig.DamageOnCollision;
-                enemy.RewardForKill = enemyConfig.ScoreForKill;
+                enemy = enemyConfig.Enemy;
                 health.Max = _random.Next(enemyConfig.MinHealth, enemyConfig.MaxHealth);
                 health.Min = 0;
                 health.Current = health.Max;
                 transform.Position = position;
                 transform.Rotation = Quaternion.identity;
+                transform.Cell = int.MinValue;
                 transformReference.Transform = instance.transform;
                 enemyReference.View = instance;
                 damageBuffer.Initialize();
@@ -82,7 +86,7 @@ namespace Asteroids.Runtime.Enemies.Systems
                 };
                 weapon.TransformOffset = 1f;
                 weapon.Targets = PhysicsLayer.Player | PhysicsLayer.Enemy;
-                weapon.ProjectileDistance = 100f;
+                weapon.ShootRange = enemyConfig.ShootRange;
                 weapon.ProjectileSize = enemyConfig.ProjectileColliderSize;
                 weapon.ProjectileSpeed = enemyConfig.ProjectilesSpeed;
                 weapon.ProjectilePrefab = enemyConfig.ProjectilePrefab;
@@ -94,18 +98,11 @@ namespace Asteroids.Runtime.Enemies.Systems
                 ship.Acceleration = enemyConfig.Acceleration;
                 ship.Damping = enemyConfig.Damping;
                 ship.MaxSpeed = enemyConfig.Speed;
+                ship.RotationSpeed = enemyConfig.RotationSpeed;
+                patrol.Point = _config.Value.CellListsConfig.RandomPointInside();
 
                 shouldSpawn--;
             }
-        }
-
-        private Vector2 RandomPosition()
-        {
-            var cellLists = _config.Value.CellListsConfig;
-            var max = cellLists.Center + cellLists.Size * 0.45f;
-            var min = cellLists.Center - cellLists.Size * 0.45f;
-
-            return new Vector2(UnityEngine.Random.Range(min.x, max.x), UnityEngine.Random.Range(min.y, max.y));
         }
     }
 }

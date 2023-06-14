@@ -15,7 +15,7 @@ namespace Asteroids.Runtime.Weapons.Components
         public float ShootDelay;
         public float ReloadTime;
         public float ProjectileSpeed;
-        public float ProjectileDistance;
+        public float ShootRange;
         public Vector2 ProjectileSize;
         public int RoundsLeft;
         public int RoundsMax;

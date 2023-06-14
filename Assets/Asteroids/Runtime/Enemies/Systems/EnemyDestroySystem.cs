@@ -11,8 +11,9 @@ namespace Asteroids.Runtime.Enemies.Systems
     {
         private readonly EcsWorldInject _world = default;
         private readonly EcsWorldInject _eventsWorld = Constants.EventsWorldName;
-        private readonly EcsFilterInject<Inc<Enemy, EnemyReference, Destroy>> _filter = default;
+        private readonly EcsFilterInject<Inc<Enemy, EnemyReference, Destroy, Transform>> _filter = default;
         private readonly EcsPoolInject<EnemyReference> _references = default;
+        private readonly EcsPoolInject<Transform> _transforms = default;
         private readonly EcsPoolInject<RemoveFromCellLists> _removeCommands = Constants.EventsWorldName;
         
         public void Run(IEcsSystems systems)
@@ -20,12 +21,13 @@ namespace Asteroids.Runtime.Enemies.Systems
             foreach (var entity in _filter.Value)
             {
                 ref var reference = ref _references.Value.Get(entity);
+                ref var transform = ref _transforms.Value.Get(entity);
                 reference.Dispose();
 
-                var commandEntity = _eventsWorld.Value.NewEntity();
-                ref var command = ref _removeCommands.Value.Add(commandEntity);
-                command.TransformEntity = entity;
-
+                var removeEntity = _eventsWorld.Value.NewEntity();
+                ref var removeCommand = ref _removeCommands.Value.Add(removeEntity);
+                removeCommand.TransformEntity = entity;
+                removeCommand.CellEntity = transform.Cell;
                 _world.Value.DelEntity(entity);
             }
         }

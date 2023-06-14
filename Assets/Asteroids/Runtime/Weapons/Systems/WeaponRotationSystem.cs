@@ -18,7 +18,7 @@ namespace Asteroids.Runtime.Weapons.Systems
                 ref var weaponInput = ref _weaponInputs.Value.Get(entity);
                 ref var transform = ref _transforms.Value.Get(entity);
 
-                weaponInput.LookDirection = transform.Up;
+                weaponInput.LookDirection = transform.Forward;
             }
         }
     }

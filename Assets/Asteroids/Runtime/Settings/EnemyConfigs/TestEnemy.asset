@@ -16,17 +16,23 @@ MonoBehaviour:
   ProjectilePrefab: {fileID: 6111101338911859992, guid: d3b3b984aa49fcc4d8acb9d5f915989e, type: 3}
   Size: {x: 1, y: 1}
   ProjectileColliderSize: {x: 0.5, y: 0.5}
+  Enemy:
+    DamageOnPlayerCollision:
+      Amount: 10
+    RewardForKill: 5
+    LastTakenDamageFrom: 0
+    FollowRange: 30
+    SafeDistance: 15
   MinDamage: 10
   MaxDamage: 20
   MinHealth: 100
   MaxHealth: 150
   MaxRounds: 15
-  ScoreForKill: 15
-  ProjectilesSpeed: 5
+  ProjectilesSpeed: 20
   Speed: 8
   Acceleration: 9
   Damping: 9
-  ShootDelay: 0.1
+  RotationSpeed: 7
+  ShootDelay: 0.5
+  ShootRange: 23
   ReloadTime: 2
-  DamageOnCollision:
-    Amount: 15
