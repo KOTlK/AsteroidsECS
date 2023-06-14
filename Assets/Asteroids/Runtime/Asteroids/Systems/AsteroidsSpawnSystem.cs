@@ -44,6 +44,7 @@ namespace Asteroids.Runtime.Asteroids.Systems
                     var entity = _world.Value.NewEntity();
                     ref var asteroid = ref _asteroids.Value.Add(entity);
                     ref var transform = ref _transforms.Value.Add(entity);
+                    transform.Cell = int.MinValue;
                     ref var asteroidReference = ref _asteroidReferences.Value.Add(entity);
                     ref var transformReference = ref _transformReferences.Value.Add(entity);
                     ref var collider = ref _aabbColliders.Value.Add(entity);

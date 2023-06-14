@@ -10,11 +10,13 @@ namespace Asteroids.Runtime.Application
     [Serializable]
     public class Config
     {
+        public Camera Camera;
+        public float CameraSpeed;
         public GameObject PlayerShipPrefab;
         public Ship PlayerShipConfig;
         public Weapon PlayerWeaponConfig;
         public float PlayerHealth;
-        public CreateCellLists CellListsConfig;
+        public CellListsConfig CellListsConfig;
         public AsteroidView[] AsteroidPrefabs;
     }
 }

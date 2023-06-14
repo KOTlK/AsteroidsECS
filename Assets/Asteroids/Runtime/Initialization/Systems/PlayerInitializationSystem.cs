@@ -53,6 +53,7 @@ namespace Asteroids.Runtime.Initialization.Systems
             ship = config.PlayerShipConfig;
             transform.Position = config.CellListsConfig.Center;
             transform.Rotation = Quaternion.identity;
+            transform.Cell = int.MinValue;
             transformReference.Transform = instance.transform;
             view.GameObject = instance;
             collider.Size = new Vector2(1, 1);

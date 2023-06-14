@@ -36,7 +36,7 @@ namespace Asteroids.Runtime.Weapons.Systems
                     command.Targets = weapon.Targets;
                     command.Prefab = weapon.ProjectilePrefab;
                     command.Speed = weapon.ProjectileSpeed;
-                    command.Distance = weapon.ProjectileDistance;
+                    command.Distance = weapon.ShootRange;
                     command.Owner = entity;
                     command.Size = weapon.ProjectileSize;
 

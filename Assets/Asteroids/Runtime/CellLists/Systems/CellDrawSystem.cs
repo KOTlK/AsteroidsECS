@@ -2,7 +2,6 @@
 using Leopotam.EcsLite;
 using Leopotam.EcsLite.Di;
 using UnityEngine;
-using Transform = Asteroids.Runtime.CellLists.Components.Transform;
 
 namespace Asteroids.Runtime.CellLists.Systems
 {
@@ -10,28 +9,23 @@ namespace Asteroids.Runtime.CellLists.Systems
     {
         private readonly EcsFilterInject<Inc<Cell, CellNeighbours>> _filter = default;
         private readonly EcsPoolInject<Cell> _cells = default;
-        private readonly EcsPoolInject<Transform> _transforms = default;
-        private readonly EcsPoolInject<CellNeighbours> _neighbours = default;
         
         public void Run(IEcsSystems systems)
         {
             foreach (var entity in _filter.Value)
             {
                 ref var cell = ref _cells.Value.Get(entity);
-                ref var neighbours = ref _neighbours.Value.Get(entity);
+                var position = cell.Position;
+                var halfExtents = cell.AABB.HalfExtents;
+                var upLeft = new Vector2(position.x - halfExtents.x, position.y + halfExtents.y);
+                var upRight = new Vector2(position.x + halfExtents.x, position.y + halfExtents.y);
+                var downRight = new Vector2(position.x + halfExtents.x, position.y - halfExtents.y);
+                var downLeft = new Vector2(position.x - halfExtents.x, position.y - halfExtents.y);
 
-
-                foreach (var cellNeighbour in neighbours.NeighboursEntities)
-                {
-                    ref var neighbour = ref _cells.Value.Get(cellNeighbour);
-                    Debug.DrawLine(cell.Position, neighbour.Position, Color.red);
-                }
-
-                foreach (var containingEntity in neighbours.ContainingTransforms)
-                {
-                    ref var transform = ref _transforms.Value.Get(containingEntity);
-                    Debug.DrawLine(cell.Position, transform.Position, Color.blue);
-                }
+                Debug.DrawLine(upLeft, upRight, Color.cyan);
+                Debug.DrawLine(upRight, downRight, Color.cyan);
+                Debug.DrawLine(downRight, downLeft, Color.cyan);
+                Debug.DrawLine(downLeft, upLeft, Color.cyan);
             }
         }
     }
