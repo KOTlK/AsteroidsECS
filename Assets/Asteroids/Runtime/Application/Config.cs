@@ -1,8 +1,7 @@
 ﻿using System;
 using Asteroids.Runtime.Asteroids.Mono;
 using Asteroids.Runtime.CellLists.Components;
-using Asteroids.Runtime.Ships.Components;
-using Asteroids.Runtime.Weapons.Components;
+using Asteroids.Runtime.View.Mono;
 using UnityEngine;
 
 namespace Asteroids.Runtime.Application
@@ -11,11 +10,9 @@ namespace Asteroids.Runtime.Application
     public class Config
     {
         public Camera Camera;
+        public Background Background;
+        public float MaxBackgroundSpeed;
         public float CameraSpeed;
-        public GameObject PlayerShipPrefab;
-        public Ship PlayerShipConfig;
-        public Weapon PlayerWeaponConfig;
-        public float PlayerHealth;
         public CellListsConfig CellListsConfig;
         public AsteroidView[] AsteroidPrefabs;
     }

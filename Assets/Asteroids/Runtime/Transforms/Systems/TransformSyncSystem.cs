@@ -7,12 +7,17 @@ using Transform = Asteroids.Runtime.CellLists.Components.Transform;
 
 namespace Asteroids.Runtime.Transforms.Systems
 {
-    public class SyncTransformSystem : IEcsRunSystem
+    public class SyncTransformSystem : IEcsRunSystem, IEcsDestroySystem
     {
         private readonly EcsFilterInject<Inc<Transform, TransformReference>> _filter = default;
         private readonly EcsPoolInject<Transform> _transforms = default;
         private readonly EcsPoolInject<TransformReference> _references = default;
         private NativeArray<Transform> _transformsArray = new (10000, Allocator.Persistent);
+
+        ~SyncTransformSystem()
+        {
+            _transformsArray.Dispose();
+        }
 
         public void Run(IEcsSystems systems)
         {
@@ -50,6 +55,11 @@ namespace Asteroids.Runtime.Transforms.Systems
                 transform.localPosition = target.Position;
                 transform.localRotation = target.Rotation;
             }
+        }
+
+        public void Destroy(IEcsSystems systems)
+        {
+            _transformsArray.Dispose();
         }
     }
 }

@@ -26,7 +26,7 @@ namespace Asteroids.Runtime.Enemies.Systems
         private readonly EcsPoolInject<Enemy> _enemies = default;
         private readonly EcsPoolInject<Health> _healths = default;
         private readonly EcsPoolInject<Transform> _transforms = default;
-        private readonly EcsPoolInject<EnemyReference> _references = default;
+        private readonly EcsPoolInject<ShipReference> _references = default;
         private readonly EcsPoolInject<TransformReference> _transformReferences = default;
         private readonly EcsPoolInject<Buffer<Damage>> _buffers = default;
         private readonly EcsPoolInject<AABBCollider> _colliders = default;

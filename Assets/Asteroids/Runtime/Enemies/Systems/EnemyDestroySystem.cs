@@ -1,18 +1,19 @@
 ﻿using Asteroids.Runtime.CellLists.Components;
 using Asteroids.Runtime.Enemies.Components;
 using Asteroids.Runtime.HP.Components;
+using Asteroids.Runtime.Ships.Components;
 using Asteroids.Runtime.Utils;
 using Leopotam.EcsLite;
 using Leopotam.EcsLite.Di;
 
 namespace Asteroids.Runtime.Enemies.Systems
 {
-    public class EnemyDestroySystem : IEcsRunSystem
+    public class EnemyDestroySystem : IEcsRunSystem, IEcsDestroySystem
     {
         private readonly EcsWorldInject _world = default;
         private readonly EcsWorldInject _eventsWorld = Constants.EventsWorldName;
-        private readonly EcsFilterInject<Inc<Enemy, EnemyReference, Destroy, Transform>> _filter = default;
-        private readonly EcsPoolInject<EnemyReference> _references = default;
+        private readonly EcsFilterInject<Inc<Enemy, ShipReference, Destroy, Transform>> _filter = default;
+        private readonly EcsPoolInject<ShipReference> _references = default;
         private readonly EcsPoolInject<Transform> _transforms = default;
         private readonly EcsPoolInject<RemoveFromCellLists> _removeCommands = Constants.EventsWorldName;
         
@@ -29,6 +30,15 @@ namespace Asteroids.Runtime.Enemies.Systems
                 removeCommand.TransformEntity = entity;
                 removeCommand.CellEntity = transform.Cell;
                 _world.Value.DelEntity(entity);
+            }
+        }
+
+        public void Destroy(IEcsSystems systems)
+        {
+            foreach (var entity in _filter.Value)
+            {
+                ref var reference = ref _references.Value.Get(entity);
+                reference.Dispose();
             }
         }
     }

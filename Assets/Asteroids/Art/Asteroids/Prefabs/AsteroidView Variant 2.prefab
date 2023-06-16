@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &843429256942634127
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4584159331627705505, guid: e25f4aaf40840594dae250032d9fa02e, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4584159331627705505, guid: e25f4aaf40840594dae250032d9fa02e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4584159331627705505, guid: e25f4aaf40840594dae250032d9fa02e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4584159331627705505, guid: e25f4aaf40840594dae250032d9fa02e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4584159331627705505, guid: e25f4aaf40840594dae250032d9fa02e, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4584159331627705505, guid: e25f4aaf40840594dae250032d9fa02e, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4584159331627705505, guid: e25f4aaf40840594dae250032d9fa02e, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4584159331627705505, guid: e25f4aaf40840594dae250032d9fa02e, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4584159331627705505, guid: e25f4aaf40840594dae250032d9fa02e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4584159331627705505, guid: e25f4aaf40840594dae250032d9fa02e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4584159331627705505, guid: e25f4aaf40840594dae250032d9fa02e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4584159331627705508, guid: e25f4aaf40840594dae250032d9fa02e, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 22100000, guid: 15ce0842233ce384a8a845db3daccde5, type: 2}
+    - target: {fileID: 4584159331627705509, guid: e25f4aaf40840594dae250032d9fa02e, type: 3}
+      propertyPath: m_Name
+      value: AsteroidView
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e25f4aaf40840594dae250032d9fa02e, type: 3}

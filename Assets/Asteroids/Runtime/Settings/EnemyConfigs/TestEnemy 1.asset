@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9cde390cc3384fbc980dc408c86a5113, type: 3}
+  m_Name: TestEnemy 1
+  m_EditorClassIdentifier: 
+  Prefab: {fileID: 7976261250945469217, guid: d6aef048296de6f42ace7002778b128b, type: 3}
+  ProjectilePrefab: {fileID: 834562905355147547, guid: 24d9543f1efcfb84b98d60fa57f4b176, type: 3}
+  Size: {x: 1, y: 1}
+  ProjectileColliderSize: {x: 0.5, y: 0.5}
+  Enemy:
+    DamageOnPlayerCollision:
+      Amount: 10
+    RewardForKill: 5
+    LastTakenDamageFrom: 0
+    FollowRange: 30
+    SafeDistance: 15
+  MinDamage: 10
+  MaxDamage: 20
+  MinHealth: 0
+  MaxHealth: 150
+  MaxRounds: 15
+  ProjectilesSpeed: 20
+  Speed: 8
+  Acceleration: 9
+  Damping: 9
+  RotationSpeed: 7
+  ShootDelay: 0.5
+  ShootRange: 23
+  ReloadTime: 2

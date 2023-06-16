@@ -99,6 +99,9 @@ namespace Asteroids.Runtime.AI.Systems
                         if(neighbourTransformEntity == entity)
                             continue;
                         
+                        if(_healths.Value.Has(neighbourTransformEntity) == false)
+                            continue;
+                        
                         ref var health = ref _healths.Value.Get(neighbourTransformEntity);
                     
                         if(health.Current <= health.Min)

@@ -8,5 +8,6 @@ namespace Asteroids.Runtime.Input.Components
     {
         public KeyCode Shoot = KeyCode.Space;
         public KeyCode Reload = KeyCode.R;
+        public KeyCode PauseGame = KeyCode.Escape;
     }
 }
