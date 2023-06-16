@@ -21,7 +21,7 @@ MonoBehaviour:
   AsteroidsAmountPerSpawn: 5
   AsteroidMinReward: 3
   AsteroidMaxReward: 9
-  EnemiesCount: 20
+  EnemiesCount: 150
   EnemyConfigs:
   - {fileID: 11400000, guid: 358c3fefa7a16f0459cd55c57da93a4b, type: 2}
   - {fileID: 11400000, guid: 7b84dcced3f80ab41b1f623d130ef059, type: 2}
