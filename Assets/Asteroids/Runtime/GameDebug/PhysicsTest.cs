@@ -4,14 +4,11 @@ using Asteroids.Runtime.CellLists.Systems;
 using Asteroids.Runtime.Collisions.Components;
 using Asteroids.Runtime.Collisions.Systems;
 using Asteroids.Runtime.GameDebug.Systems;
-using Asteroids.Runtime.GameTime.Services;
 using Asteroids.Runtime.GameTime.Systems;
 using Asteroids.Runtime.Utils;
 using Leopotam.EcsLite;
 using Leopotam.EcsLite.Di;
 using Leopotam.EcsLite.ExtendedSystems;
-using Mitfart.LeoECSLite.UnityIntegration.Plugins.Mitfart.LeoECSLite.UnityIntegration.Runtime;
-using Mitfart.LeoECSLite.UnityIntegration.Plugins.Mitfart.LeoECSLite.UnityIntegration.Runtime.Name;
 using TMPro;
 using UnityEngine;
 using Collision = Asteroids.Runtime.Collisions.Components.Collision;
@@ -55,8 +52,6 @@ namespace Asteroids.Runtime.GameDebug
                 .DelHere<Collision>(Constants.PhysicsWorldName)
                 .Add(new AABBCollisionDetectionSystem())
                 .Add(new CollisionsDebugSystem())
-                .Add(new EcsWorldDebugSystem())
-                .Add(new EcsWorldDebugSystem(Constants.PhysicsWorldName, new NameSettings(true)))
                 .Inject(new Time(), new Config(){CellListsConfig = _cellListsConfig})
                 .Init();
         }

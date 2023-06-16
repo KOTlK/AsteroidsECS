@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 994f15be974348279bfc98235754d1e7, type: 3}
+  m_Name: Default
+  m_EditorClassIdentifier: 
+  PlayerShipPrefab: {fileID: 7976261250945469217, guid: d6aef048296de6f42ace7002778b128b, type: 3}
+  PlayerShipConfig:
+    MaxSpeed: 10
+    Acceleration: 10
+    Damping: 10
+    RotationSpeed: 10
+    Velocity: {x: 0, y: 0}
+  PlayerWeaponConfig:
+    Damage:
+      Amount: 20
+    Targets: 24
+    TransformOffset: 1
+    ShootDelay: 0.5
+    ReloadTime: 3
+    ProjectileSpeed: 15
+    ShootRange: 100
+    ProjectileSize: {x: 0.5, y: 0.5}
+    RoundsLeft: 15
+    RoundsMax: 15
+    ProjectilePrefab: {fileID: 186792278299068364, guid: b641f49a50ea012469019b49f7c81664, type: 3}
+  PlayerHealth: 150

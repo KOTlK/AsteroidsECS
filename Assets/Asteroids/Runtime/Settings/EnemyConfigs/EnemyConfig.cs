@@ -1,6 +1,6 @@
 ﻿using System;
 using Asteroids.Runtime.Enemies.Components;
-using Asteroids.Runtime.Enemies.Mono;
+using Asteroids.Runtime.Ships.Mono;
 using Asteroids.Runtime.Weapons.Mono;
 using UnityEngine;
 
@@ -10,7 +10,7 @@ namespace Asteroids.Runtime.Settings.EnemyConfigs
     [CreateAssetMenu(menuName = "New/Enemy", fileName = "Enemy", order = 1)]
     public class EnemyConfig : ScriptableObject
     {
-        public EnemyView Prefab;
+        public ShipView Prefab;
         public ProjectileView ProjectilePrefab;
         public Vector2 Size;
         public Vector2 ProjectileColliderSize;

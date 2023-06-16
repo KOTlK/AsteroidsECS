@@ -12,27 +12,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9cde390cc3384fbc980dc408c86a5113, type: 3}
   m_Name: TestEnemy
   m_EditorClassIdentifier: 
-  Prefab: {fileID: 847741864663148003, guid: 59c41ef0dab826a418472a10431d8c24, type: 3}
-  ProjectilePrefab: {fileID: 6111101338911859992, guid: d3b3b984aa49fcc4d8acb9d5f915989e, type: 3}
+  Prefab: {fileID: 1647693453035294991, guid: a2e1e75f09c57c849be233a7c34596e1, type: 3}
+  ProjectilePrefab: {fileID: 834562905355147547, guid: 24d9543f1efcfb84b98d60fa57f4b176, type: 3}
   Size: {x: 1, y: 1}
   ProjectileColliderSize: {x: 0.5, y: 0.5}
   Enemy:
     DamageOnPlayerCollision:
-      Amount: 10
-    RewardForKill: 5
+      Amount: 5
+    RewardForKill: 3
     LastTakenDamageFrom: 0
     FollowRange: 30
     SafeDistance: 15
-  MinDamage: 10
-  MaxDamage: 20
-  MinHealth: 100
-  MaxHealth: 150
-  MaxRounds: 15
+  MinDamage: 5
+  MaxDamage: 15
+  MinHealth: 0
+  MaxHealth: 100
+  MaxRounds: 10
   ProjectilesSpeed: 20
-  Speed: 8
-  Acceleration: 9
-  Damping: 9
-  RotationSpeed: 7
-  ShootDelay: 0.5
-  ShootRange: 23
-  ReloadTime: 2
+  Speed: 12
+  Acceleration: 12
+  Damping: 10
+  RotationSpeed: 10
+  ShootDelay: 0.4
+  ShootRange: 20
+  ReloadTime: 1.5

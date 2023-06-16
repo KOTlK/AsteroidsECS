@@ -18,11 +18,16 @@ namespace Asteroids.Runtime.Score
             _current += amount;
             _scoreView.Display(_current);
         }
-        
+
         public void Reset()
         {
             _current = 0;
             _scoreView.Display(_current);
+        }
+
+        public void Visualize(ScoreView view)
+        {
+            view.Display(_current);
         }
     }
 }

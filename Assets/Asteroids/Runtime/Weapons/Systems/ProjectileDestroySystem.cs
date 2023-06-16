@@ -9,7 +9,7 @@ using Transform = Asteroids.Runtime.CellLists.Components.Transform;
 
 namespace Asteroids.Runtime.Weapons.Systems
 {
-    public class ProjectileDestroySystem : IEcsRunSystem
+    public class ProjectileDestroySystem : IEcsRunSystem, IEcsDestroySystem
     {
         private readonly EcsWorldInject _world = default;
         private readonly EcsFilterInject<Inc<Projectile, ProjectileReference, Destroy, Transform>> _filter = default;
@@ -29,6 +29,16 @@ namespace Asteroids.Runtime.Weapons.Systems
                 reference.Dispose();
 
                 _world.Value.DelEntity(entity);
+            }
+        }
+
+        private readonly EcsFilterInject<Inc<ProjectileReference>> _destroyFilter = default;
+        public void Destroy(IEcsSystems systems)
+        {
+            foreach (var entity in _destroyFilter.Value)
+            {
+                ref var reference = ref _references.Value.Get(entity);
+                reference.Dispose();
             }
         }
     }

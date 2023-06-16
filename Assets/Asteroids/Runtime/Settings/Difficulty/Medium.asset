@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9dea3d4830f04abca3da95a2c8095503, type: 3}
+  m_Name: Medium
+  m_EditorClassIdentifier: 
+  AsteroidsDamage:
+    Amount: 20
+  AsteroidsSpeed: 15
+  AsteroidsLifeTime: 15
+  AsteroidsSpawnMinDelay: 2
+  AsteroidsSpawnMaxDelay: 5
+  AsteroidsAmountPerSpawn: 4
+  AsteroidMinReward: 7
+  AsteroidMaxReward: 15
+  EnemiesCount: 15
+  EnemyConfigs:
+  - {fileID: 11400000, guid: 358c3fefa7a16f0459cd55c57da93a4b, type: 2}
+  - {fileID: 11400000, guid: 7b84dcced3f80ab41b1f623d130ef059, type: 2}

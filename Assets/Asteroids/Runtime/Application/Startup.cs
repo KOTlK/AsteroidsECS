@@ -1,30 +1,9 @@
-﻿using Asteroids.Runtime.AI.Systems;
-using Asteroids.Runtime.Asteroids.Systems;
-using Asteroids.Runtime.CellLists.Systems;
-using Asteroids.Runtime.Collisions.Systems;
-using Asteroids.Runtime.Enemies.Systems;
-using Asteroids.Runtime.GameCamera.Systems;
-using Asteroids.Runtime.GameTime.Systems;
-using Asteroids.Runtime.HP.Systems;
-using Asteroids.Runtime.Initialization.Systems;
+﻿using Asteroids.Runtime.Application.GameLoop;
+using Asteroids.Runtime.Application.GameLoop.States;
 using Asteroids.Runtime.Input.Components;
-using Asteroids.Runtime.Input.Systems;
 using Asteroids.Runtime.Score;
-using Asteroids.Runtime.Score.Systems;
-using Asteroids.Runtime.Score.View;
-using Asteroids.Runtime.Ships.Systems;
-using Asteroids.Runtime.Transforms.Systems;
-using Asteroids.Runtime.Utils;
-using Asteroids.Runtime.Weapons.Systems;
-using Leopotam.EcsLite;
-using Leopotam.EcsLite.Di;
-using Leopotam.EcsLite.ExtendedSystems;
-using Mitfart.LeoECSLite.UnityIntegration.Plugins.Mitfart.LeoECSLite.UnityIntegration.Runtime;
-using Mitfart.LeoECSLite.UnityIntegration.Plugins.Mitfart.LeoECSLite.UnityIntegration.Runtime.Name; //wtf
+using Asteroids.Runtime.UI;
 using UnityEngine;
-using Collision = Asteroids.Runtime.Collisions.Components.Collision;
-using Time = Asteroids.Runtime.GameTime.Services.Time;
-using Transform = Asteroids.Runtime.CellLists.Components.Transform;
 
 namespace Asteroids.Runtime.Application
 {
@@ -32,93 +11,51 @@ namespace Asteroids.Runtime.Application
     {
         [SerializeField] private Camera _camera;
         [SerializeField] private Config _config;
-        [SerializeField] private Difficulty _difficulty;
         [SerializeField] private InputMap _inputMap;
-        [SerializeField] private ScoreView _scoreView;
-        
-        private EcsSystems _systems;
+        [SerializeField] private ViewRoot _viewRoot;
+        [SerializeField] private DifficultySelector _difficultySelector;
+        [SerializeField] private PlayerShipSelector _playerShipSelector;
+
+        private GameScore _score;
+        private StateMachine _stateMachine;
+        private RunningSystems _runningSystems;
 
         private void Start()
         {
             UnityEngine.Application.targetFrameRate = 0;
-            var world = new EcsWorld();
-            var physicsWorld = new EcsWorld();
-            var eventsWorld = new EcsWorld();
-            _systems = new EcsSystems(world);
-            _systems.AddWorld(physicsWorld, Constants.PhysicsWorldName);
-            _systems.AddWorld(eventsWorld, Constants.EventsWorldName);
 
-            var debugEntity = world.NewEntity(); // entity for correct debug visualization
-            var transformsPool = world.GetPool<Transform>();
-            transformsPool.Add(debugEntity);
-
-            AddInitSystems();
-            _systems
-                .Add(new TimeSystem())
-                .Add(new AsteroidsSpawnSystem())
-                .Add(new EnemiesSpawnSystem())
-                .Add(new PlayerShipInputSystem())
-                .Add(new PlayerWeaponInputSystem())
-                .Add(new PatrolSystem())
-                .Add(new FollowSystem())
-                .Add(new AttackSystem())
-                .Add(new PositionRestrictionSystem())
-                .Add(new ShipMovementSystem())
-                .Add(new ShipRotationSystem())
-                .Add(new WeaponRotationSystem())
-                .Add(new VelocitySystem())
-                .Add(new ShootingSystem())
-                .Add(new ShootDelaySystem())
-                .Add(new ReloadingSystem())
-                .Add(new ProjectileSpawnSystem())
-                .Add(new ProjectileMoveSystem())
-                .Add(new AsteroidsMovementSystem())
-                .Add(new AsteroidsLifeSystem())
-                .Add(new InsertTransformSystem())
-                .Add(new RemoveFromCellListsSystem())
-                .Add(new CellListsRebuildSystem())
-                //.Add(new CellDrawSystem())
-                //.Add(new CellNeighboursDrawSystem())
-                //.Add(new DisplayNeighboursSystem())
-                .DelHere<Collision>(Constants.PhysicsWorldName)
-                .Add(new AABBCollisionDetectionSystem())
-                //.Add(new CollisionsDebugSystem())
-                .Add(new CollisionsHandleSystem())
-                .Add(new DamageSystem())
-                .Add(new ProjectileDestroySystem())
-                .Add(new AsteroidsDestroySystem())
-                .Add(new EnemyDeathSystem())
-                .Add(new EnemyDestroySystem())
-                .Add(new ScoreSystem())
-                .Add(new CameraFollowSystem())
-                .Add(new SyncTransformSystem())
-
-#if UNITY_EDITOR
-                //.Add(new EcsWorldDebugSystem())
-                //.Add(new EcsWorldDebugSystem(Constants.PhysicsWorldName, new NameSettings(true)))
-                //.Add(new EcsWorldDebugSystem(Constants.EventsWorldName, new NameSettings(true)))
-#endif
-                
-                .Inject(new Time(), new GameScore(_scoreView) , _config, _difficulty, _inputMap, _camera)
-                .Init();
+            _stateMachine = new StateMachine(
+                new MainMenuState(
+                    _viewRoot,
+                    _camera,
+                    _inputMap,
+                    _config,
+                    _difficultySelector,
+                    _playerShipSelector,
+                    _runningSystems = new RunningSystems(),
+                    _score = new GameScore(_viewRoot.InGameWindow.Score)),
+                new GameRunningState(
+                    _viewRoot,
+                    _inputMap,
+                    _runningSystems),
+                new GamePausedState(
+                    _viewRoot),
+                new LoseState(
+                    _viewRoot,
+                    _score),
+                _runningSystems);
         }
 
-        private void AddInitSystems()
-        {
-            _systems
-                .Add(new CellListsInitSystem())
-                .Add(new PlayerInitializationSystem())
-                ;
-        }
+        
 
         private void Update()
         {
-            _systems.Run();
+            _stateMachine.Execute();
         }
 
         private void OnDestroy()
         {
-            _systems.Destroy();
+            _runningSystems.Destroy();
         }
     }
 }
